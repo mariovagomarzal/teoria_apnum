@@ -1,0 +1,339 @@
+\chapter[Aproximación de funciones]
+  {Aproximación de funciones. El problema de aproximación de Taylor}
+
+\section{Aproximación de funciones}
+  Uno de los objetivos principales en Aproximación numérica es aproximar
+  una función $f$ por otra $f^*$ escogida de un conjunto de funciones
+  $\mathcal{C}$ que consideramos más \textit{sencillas}.
+
+  Si la función $f$ se ha de someter a un proceso numérico $\mathcal{P}$,
+  como por ejemplo hallar ceros de la función, calcular una integral, etc.,
+  diremos que $\mathcal{P}(f^*)$ es una \textit{aproximación} de
+  $\mathcal{P}(f)$.
+
+  Está claro que un problema de aproximación depende de la clase
+  $\mathcal{C}$ donde se buscan las funciones y de la regla o norma que se
+  considere para \textit{imitar el compartaiento} de $f$ por $f^*$.
+
+  En estos apuntes trataremos principalmente problemas lineales. Es decir,
+  la función $f^*$ se construye como combinación lineal de unas funciones
+  $\{\phi_i\}_{i=0}^n \subseteq \mathcal{C}$ prefijadas. Así pues, el
+  objetivo es determinar los coeficientes $c_0, c_1, \dots, c_n$ de manera
+  que
+  \[
+    f^* = \sum_{i=0}^n c_i \phi_i
+    = c_0 \phi_0 + c_1 \phi_1 + \dots + c_n \phi_n.
+  \]
+
+  En la mayor parte de estos apuntes usaremos \textit{polinomios
+  aproximadores}, esto es, el espacio de funciones que tomaremos será
+  \[
+    \mathcal{C} = \Pi_n := 
+    \set{a_0 + a_1 x + \dots + a_n x^n :
+    a_i \in \RR, \forall 0 \le i \le n}.
+  \]
+
+\section[El problema de Taylor]{El problema de aproximación de Taylor}
+  Si consideramos que \textit{imitar el comportamiento} de $f$ por $f^*$
+  significa que $f^*$ y $f$ y sus respectivas derivadas hasta un cierto
+  orden coinciden en un punto, entonces, el problema de aproximación de
+  Taylor es el problema de aproximación más natural que podemos plantear.
+  Estudiemos dicho problema desde la perspectiva de la aproximación
+  numérica.
+
+  \begin{definition}[Problema de aproximación de Taylor]
+    Sea $f$ una función escalar $n$ veces derivable en un intervalo $[a,
+    b]$ y sea $x_0 \in (a, b)$. El problema de aproximación de Taylor trata
+    de determinar un polinomio de grado menor o igual que $n$, 
+    $P_n \in \Pi_n$, tal que
+    \[
+      P_n^{(k)} = f^{(k)}(x_0), \quad \forall 0 \le k \le n.
+    \]
+  \end{definition}
+
+  \begin{theorem}
+    El problema de aproximación de Taylor tiene soluión y es única. 
+  \end{theorem}
+
+  \begin{proof}
+    Para determinar el polinomio $P_n$ que resuelve el problema de
+    aproximación de Taylor, consideraremos la base canónica
+    $\set{x^i}_{i=0}^{n}$ de $\Pi_n$, de manera que el objetivo será
+    determinar los coeficientes $a_0, a_1, \dots, a_n$ de manera que
+    \[
+      P_n(x) = a_0 + a_1 x + \dots + a_n x^n
+    \]
+    cumpla los requisitos del problema.
+
+    Imponiendo las condiciones descritas en el problema de aproximación de
+    Taylor, obtenemos el siguiente sistema de ecuaciones lineales
+    \[
+      \underbrace{
+        \begin{pmatrix}
+          1 & x_0 & x_0^2 & \cdots & x_0^n \\
+          0 & 1 & 2 x_0 & \cdots & n x_0^{n-1} \\
+          \vdots & \vdots & \vdots & \ddots & \vdots \\
+          0 & 0 & 0 & \cdots & n! \\
+        \end{pmatrix}
+      }_A
+      \underbrace{
+        \begin{pmatrix}
+          a_0 \\ a_1 \\ \vdots \\ a_n
+        \end{pmatrix}
+      }_X
+      =
+      \underbrace{
+        \begin{pmatrix}
+          f(x_0) \\ f'(x_0) \\ \vdots \\ f^{(n)}(x_0)
+        \end{pmatrix}
+      }_F.
+    \]
+
+    Como $A$ es una matriz triangular superior con elementos diagonales no
+    nulos, tenemos que $\det A \neq 0$ y, por tanto, el sistema tiene
+    solución única.
+  \end{proof}
+
+  El método utilizado para demostrar la existencia no es el convencional
+  para \textit{construir} el polinomio de Taylor\footnote{Ya podemos hablar
+  del \guillemot{polinomio de Taylor} puesto que hemos probado su
+  unicidad.}. Es costumbre presentar el polinomio de Taylor como
+  \begin{equation} \label{eq:taylor_natural}
+    \emphmath{
+      P_n(x) = \sum_{k=0}^n \frac{f^{(k)}(x_0)}{k!} (x - x_0)^k.
+    }
+  \end{equation}
+
+  Es fácil comprobar que el polinomio anterior verifica las condiciones del
+  problema y, por la unicidad ya probada, es el mismo polinomio que hemos
+  obtenido en la demostración anterior.
+
+  La forma de \ref{eq:taylor_natural} es la que se conoce como
+  \textit{forma natural} del polinomio de Taylor, en la que usamos la base
+  \[
+    \set{1, (x - x_0), \dots, (x - x_0)^n}
+  \]
+  de $\Pi_n$. Usando esta base, el cálculo de los coeficientes en la
+  expresión
+  \[
+    P_n(x) = c_0 + c_1 (x - x_0) + \dots + c_n (x - x_0)^n
+  \]
+  es trivial:
+  \[
+    c_k = \frac{f^{(k)}(x_0)}{k!}, \quad \forall 0 \le k \le n.
+  \]
+  
+  Destacamos, por último, que el polinomio de Taylor en forma natural posee
+  la propiedad de \textit{permanencia}, esto es, si queremos calcular el
+  polinomio de Taylor de orden $n + 1$ de una función $f$ a partir del
+  polinomio de Taylor de orden $n$, basta con añadir un término más a la
+  suma de \ref{eq:taylor_natural}.
+
+  \subsection{El error del polinomio de Taylor}
+    Es importante conocer el error que se comete al aproximar una función
+    $f$ por su polinomio de Taylor. Los siguientes resultados abordan este
+    problema.
+
+    \begin{theorem}[Error de Lagrange para el polinomio de Taylor]
+      \label{thm:error_taylor}
+      Sea $f$ una función escalar $n + 1$ veces derivable en $[a, b]$ y
+      $x_0 \in (a, b)$. Si $P_n(x) \in \Pi_n$ es el polinomio de Taylor en
+      el punto $x_0$, entonces, para cada $x \in (a, b)$, existe un $\xi_x
+      \in (a, b)$ tal que
+      \begin{equation} \label{eq:error_lagrange}
+        \emphmath{
+          f(x) - P_n(x) = \frac{f^{(n+1)}(\xi_x)}{(n+1)!}(x - x_0)^{n+1}.
+        }
+      \end{equation}
+    \end{theorem}
+
+    \begin{proof}
+      En primer lugar, notamos que si $x = x_0$, ambos miembros de
+      \ref{eq:error_lagrange} se anulan. Así, supongamos que $x \neq x_0$.
+      Para este $x$, definimos
+      \[
+        M := \frac{f(x) - P_n(x)}{(x - x_0)^{n+1}}.
+      \]
+      Probaremos que existe un $\xi_x \in (a, b)$ tal que
+      \[
+        M = \frac{f^{(n+1)}(\xi_x)}{(n+1)!},
+      \]
+      lo que probará el teorema.
+
+      Consideramos la función auxiliar
+      \[
+        \phi(t) = P_n(t) + M (t - x_0)^{n+1} - f(t).
+      \]
+      Por construcción, notamos que $\phi$ es derivable en $(x, x_0)$ (o
+      $(x_0, x)$) y que $\phi(x) = \phi(x_0) = 0$. De esta manera, por el
+      teorema de Rolle, sabemos que $\phi'$ se anula en algún punto $t_1$
+      entre $x$ y $x_0$. De nuevo, por el teorema de Rolle, $\phi''$ se
+      anula en algún punto $t_2$ entre $t_1$ y $x_0$. Repitiendo este
+      proceso $n + 1$ veces, obtenemos que $\phi^{(n+1)}$ se anula en algún
+      punto $\xi_x$ entre $t_n$ y $x_0$. En particular, $\xi_x$ está entre
+      $x$ y $x_0$ y, por tanto, en $(a, b)$.
+
+      Notamos que
+      \[
+        \phi^{(n+1)}(t) = M (n+1)! - f^{(n+1)}(t)
+      \]
+      y que, por la elección de $\xi_x$, $\phi^{(n+1)}(\xi_x) = 0$. De
+      esta manera, obtenemos que
+      \[
+        M = \frac{f^{(n+1)}(\xi_x)}{(n+1)!},
+      \]
+      como queríamos probar.
+    \end{proof}
+
+    \begin{remark} \label{rmk:error_taylor}
+      Por simplicidad, en el teorema \ref{thm:error_taylor} hemos dicho que
+      $\xi_x$ está en $(a, b)$. Sin embargo, como hemos visto en la
+      demostración, podemos ser más precisos y decir que $\xi_x$ está en el
+      intervalo abierto $(x, x_0)$ o $(x_0, x)$, dependiendo de si $x <
+      x_0$ o $x > x_0$.
+
+      En algunas ocasiones, puede ser útil tomar el intervalo más
+      pequeño posible para obtener mejores cotas del error.
+    \end{remark}
+
+    \subsubsection{Acotaciones del error}
+      En el teorema \ref{thm:error_taylor} hemos probado la existencia de
+      un punto $\xi_x$ que verifica \ref{eq:error_lagrange}. Sin embargo,
+      este resultado no es constructivo, es decir, no nos permite
+      determinar el valor exacto de $\xi_x$. Por ello, lo máximo a lo que
+      podemos aspirar, en general, es a acotar el error cometido al
+      aproximar $f(x)$ por $P_n(x)$.
+
+      En la práctica, esto se traduce en acotar el valor absoluto de la
+      derivada $(n+1)$-ésima de $f$ en el intervalo $(a, b)$ o, como
+      comentábamos en la nota \ref{rmk:error_taylor}, en el intervalo $(x,
+      x_0)$.
+      
+      Es decir, si llamamos
+      \[
+        M = \sup_{t \in (a, b)} \abs{f^{(n+1)}(t)},
+      \]
+      entonces, por \ref{eq:error_lagrange}, tenemos que
+      \[
+        \abs{f(x) - P_n(x)}
+        \le \frac{M}{(n+1)!} \abs{x - x_0}^{n+1}.
+      \]
+
+  \subsection{Caracterizaciones del polinomio de Taylor}
+    En esta sección, veremos algunas caracterizaciones del polinomio de
+    Taylor que nos permitirán comprobar si un posible candidato a ser dicho
+    polinomio lo es realmente sin necesidad de calcular explícitamente las
+    derivadas de $f$ u otras operaciones que puedan ser costosas.
+
+    \begin{proposition} \label{prop:caracterizacion1_taylor}
+      Sea $f$ una función escalar $n + 1$ veces derivable en $[a, b]$ y
+      $x_0 \in (a, b)$. El polinomio de Taylor de $f$ en $x_0$ de orden $n$
+      es el único polinomio $P_n \in \Pi_n$ tal que
+      \begin{equation} \label{eq:caracterizacion1_taylor}
+        \lim_{x \to x_0} \frac{P_n(x) - f(x)}{(x - x_0)^n} = 0.
+      \end{equation}
+    \end{proposition}
+
+    \begin{proof}
+      Primeramente, supongamos que $P_n$ verifica
+      \ref{eq:caracterizacion1_taylor}. En este caso, es claro que
+      $f(x_0) = P_n(x_0)$, pues en caso contrario, el límite no sería
+      finito.
+
+      Por otra parte, como
+      \[
+        \lim_{x \to x_0} f(x) - P_n(x) = 0
+        \quad \text{y} \quad
+        \lim_{x \to x_0} (x - x_0)^n = 0
+      \]
+      y ambas funciones son derivables, podemos aplicar la regla de
+      L'Hôpital para obtener que
+      \[
+        \lim_{x \to x_0} \frac{f'(x) - P_n'(x)}{n (x - x_0)^{n-1}} = 0,
+      \]
+      pues, si el límite no fuese finito, el límite de la función original
+      tampoco lo sería y tendríamos una contradicción. De esta manera,
+      usando un razonamiento análogo al anterior, obtenemos que $f'(x_0) =
+      P_n'(x_0)$.
+
+      No es difícil ver que, usando un razonamiento inductivo similar,
+      tenemos que
+      \[
+        f^{(k)}(x_0) = P_n^{(k)}(x_0), \quad \forall 0 \le k \le n,
+      \]
+      lo que prueba que $P_n$ es el polinomio de Taylor de $f$ en $x_0$.
+
+      Por otra parte, supongamos que $P_n$ es el polinomio de Taylor de $f$
+      en $x_0$. Por el teorema \ref{thm:error_taylor}, sabemos que existe
+      un $\xi_x \in (a, b)$ tal que
+      \[
+        f(x) - P_n(x) = \frac{f^{(n+1)}(\xi_x)}{(n+1)!}(x - x_0)^{n+1}.
+      \]
+
+      Sustituyendo en el límite de \ref{eq:caracterizacion1_taylor},
+      tenemos que
+      \[
+        \begin{split}
+          \lim_{x \to x_0} \frac{P_n(x) - f(x)}{(x - x_0)^n}
+          &= \lim_{x \to x_0} \frac{f^{(n+1)}(\xi_x)}{(n+1)!}(x - x_0) \\
+          &= \frac{f^{(n+1)}(x_0)}{(n+1)!} \lim_{x \to x_0} (x - x_0) \\
+          &= 0,
+        \end{split}
+      \]
+      como queríamos probar.
+    \end{proof}
+
+    \begin{proposition}
+      Sea $f$ una función escalar $n + 1$ veces derivable en $[a, b]$ y
+      $x_0 \in (a, b)$. El polinomio de Taylor de $f$ en $x_0$ de orden $n$
+      es el único polinomio $P_n \in \Pi_n$ tal que
+      \begin{equation} \label{eq:caracterizacion2_taylor}
+        \abs{f(x) - P_n(x)} \le M \abs{x - x_0}^{n+1},
+      \end{equation}
+      para cierto $M > 0$, para todo $x$ en algún entorno de $x_0$.
+    \end{proposition}
+
+    \begin{proof}
+      Supongamos primeramente que $P_n$ es el polinomio de Taylor de $f$ en
+      $x_0$. Por el teorema \ref{thm:error_taylor}, sabemos que existe un
+      $\xi_x \in (a, b)$ tal que
+      \[
+        \lim_{x \to x_0} \frac{P_n(x) - f(x)}{(x - x_0)^{n + 1}}
+        = \lim_{x \to x_0} \frac{f^{(n+1)}(\xi_x)}{(n+1)!} =: \alpha.
+      \]
+
+      Así, por la definición de límite, si tomamos $\varepsilon = 1$,
+      existe un $\delta > 0$ tal que
+      \[
+        \abs{\frac{P_n(x) - f(x)}{(x - x_0)^{n + 1}} - \alpha} < 1,
+        \quad \forall x \in (x_0 - \delta, x_0 + \delta).
+      \]
+
+      Por la desigualdad triangular, tenemos que
+      \[
+        \abs{\frac{f(x) - P_n(x)}{(x - x_0)^{n + 1}}}
+        < \abs{\alpha} + 1 =: M, 
+        \quad \forall x \in (x_0 - \delta, x_0 + \delta),
+      \]
+      o, equivalentemente,
+      \[
+        \abs{f(x) - P_n(x)} < M \abs{x - x_0}^{n + 1},
+        \quad \forall x \in (x_0 - \delta, x_0 + \delta),
+      \]
+      como queríamos probar.
+
+      Por otra parte, supongamos que $P_n$ verifica
+      \ref{eq:caracterizacion2_taylor} en cierto entorno de $x_0$. En este
+      caso,
+      \[
+        \abs{\frac{f(x) - P_n(x)}{(x - x_0)^n}} \le M \abs{x - x_0},
+      \]
+      para todo $x$ en dicho entorno y con $x \neq x_0$.
+
+      Por tanto, tomando límites, tenemos que
+      \[
+        \lim_{x \to x_0} \frac{f(x) - P_n(x)}{(x - x_0)^n} = 0,
+      \]
+      lo que, por la proposición \ref{prop:caracterizacion1_taylor}, prueba
+      que $P_n$ es el polinomio de Taylor de $f$ en $x_0$.
+    \end{proof}
